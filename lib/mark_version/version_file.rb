@@ -1,0 +1,118 @@
+class VersionFile
+  attr_reader :file_name
+
+  def initialize(file_name = 'VERSION')
+    fail "Version file '#{file_name}' does not exist." unless File.file?(file_name)
+    @file_name = file_name
+    @version_file = open(file_name, 'r+')
+  end
+
+  def version
+    @version_file.rewind
+    version = @version_file.readline.chomp
+    version
+  end
+
+  def short_version
+    return version unless release_candidate?
+
+    version.split('-')[0]
+  end
+
+  def patch
+    fail 'Cannot patch a release candidate, it needs to be released first.' if release_candidate?
+    version = version_as_array
+    version[2] = (version[2].to_i + 1).to_s
+
+    write(version.join('.'))
+  end
+
+  def minor
+    fail 'Cannot minor increment a release candidate, it needs to be released first.' if release_candidate?
+    version = version_as_array
+    version[2] = '0'
+    version[1] = (version[1].to_i + 1).to_s
+
+    write(version.join('.'))
+  end
+
+  def major
+    fail 'Cannot major increment a release candidate, it needs to be released first.' if release_candidate?
+    version = version_as_array
+    version[2] = '0'
+    version[1] = '0'
+    version[0] = (version[0].to_i + 1).to_s
+
+    write(version.join('.'))
+  end
+
+  def minor_release_candidate
+    fail 'Cannot make a releae candidate out of a release candidate. To increment to the next release candidate, invoke "increment_release_candidate".' if release_candidate?
+    minor
+    write("#{short_version}-RC1")
+  end
+
+  def major_release_candidate
+    fail 'Cannot make a releae candidate out of a release candidate. To increment to the next release candidate, invoke "increment_release_candidate".' if release_candidate?
+    major
+    write("#{version}-RC1")
+  end
+
+  def increment_release_candidate
+    fail 'Cannot increment the release candidate version on a non release candidate.' unless release_candidate?
+    write("#{short_version}-RC#{next_release_candidate}")
+  end
+
+  def release
+    fail 'Cannot release a non release candidate.' unless release_candidate?
+    write(short_version)
+  end
+
+  def current_patch_version
+    if version.include?('RC')
+      version_as_array[2].split('-')[0]
+    else
+      version_as_array[2]
+    end
+  end
+
+  def current_minor_version
+    version_as_array[1]
+  end
+
+  def current_major_version
+    version_as_array[0]
+  end
+
+  def release_candidate_iteration
+    version.split('RC')[1].to_s
+  end
+
+  def release_candidate?
+    version.include?('RC')
+  end
+
+  private
+
+  def version_as_array
+    version.split('.')
+  end
+
+  def next_release_candidate
+    return 1 unless release_candidate?
+
+    release_candidate_iteration.to_i + 1
+  end
+
+  def revision
+    `git rev-parse --short HEAD`.chomp
+  end
+
+  def write(version)
+    @version_file.rewind
+    @version_file.puts(version)
+    @version_file.print(revision)
+    @version_file.rewind
+    version
+  end
+end
