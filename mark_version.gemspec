@@ -9,5 +9,5 @@ Gem::Specification.new do |s|
   s.homepage = 'http://graydens.ca'
   s.license = 'MIT'
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 3.2'
 end
