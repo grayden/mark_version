@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name = 'Mark Version'
+  s.name = 'mark_version'
   s.version = '0.0.0'
   s.date = '2015-05-30'
   s.summary = 'A tool for recording the version of a ruby application.'
