@@ -8,4 +8,6 @@ Gem::Specification.new do |s|
   s.files = `git ls-files`.split($/)
   s.homepage = 'graydens.ca'
   s.license = 'MIT'
+
+  s.add_development_dependency 'rspec'
 end
