@@ -3,15 +3,16 @@ class VersionFile
 
   def initialize(file_name = 'VERSION')
     @file_name = file_name
-    @version_file = open(file_name, 'r+')
   end
 
   def init
     fail 'Project already initialized.' if file_exists?
+    @version_file = open(file_name, 'w')
     @version_file.rewind
-    @version_file.puts(version)
+    @version_file.puts('0.0.0')
     @version_file.print(revision)
     @version_file.rewind
+    @version_file.close
     version
   end
 
@@ -21,8 +22,9 @@ class VersionFile
 
   def version
     fail "Version file '#{file_name}' does not exist." unless file_exists?
-    @version_file.rewind
+    @version_file = open(file_name, 'r+')
     version = @version_file.readline.chomp
+    @version_file.close
     version
   end
 
@@ -123,10 +125,10 @@ class VersionFile
 
   def write(version)
     fail "Version file '#{file_name}' does not exist." unless file_exists?
-    @version_file.rewind
+    @version_file = open(file_name, 'r+')
     @version_file.puts(version)
     @version_file.print(revision)
-    @version_file.rewind
+    @version_file.close
     version
   end
 end
