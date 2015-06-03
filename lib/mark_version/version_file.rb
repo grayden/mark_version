@@ -2,12 +2,25 @@ class VersionFile
   attr_reader :file_name
 
   def initialize(file_name = 'VERSION')
-    fail "Version file '#{file_name}' does not exist." unless File.file?(file_name)
     @file_name = file_name
     @version_file = open(file_name, 'r+')
   end
 
+  def init
+    fail 'Project already initialized.' if file_exists?
+    @version_file.rewind
+    @version_file.puts(version)
+    @version_file.print(revision)
+    @version_file.rewind
+    version
+  end
+
+  def file_exists?
+    File.file?(file_name)
+  end
+
   def version
+    fail "Version file '#{file_name}' does not exist." unless file_exists?
     @version_file.rewind
     version = @version_file.readline.chomp
     version
@@ -109,6 +122,7 @@ class VersionFile
   end
 
   def write(version)
+    fail "Version file '#{file_name}' does not exist." unless file_exists?
     @version_file.rewind
     @version_file.puts(version)
     @version_file.print(revision)

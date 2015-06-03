@@ -3,6 +3,12 @@ require 'thor'
 class MarkVersionCli < Thor
   default_task :show
 
+  def init
+    VersionFile.new.init
+    commit
+    tag
+  end
+
   desc 'patch', 'create a new patch-level (n.n.X) release'
   def patch
     VersionFile.new.patch
