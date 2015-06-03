@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.authors = ['Grayden Smith']
   s.email = 'grayden@tech-vision.ca'
   s.files = `git ls-files`.split($/)
+  s.executables << 'version'
   s.homepage = 'http://graydens.ca'
   s.license = 'MIT'
 
