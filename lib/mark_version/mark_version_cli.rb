@@ -6,62 +6,59 @@ class MarkVersionCli < Thor
   desc 'init', 'initialize the project to start tracking it\'s version'
   def init
     VersionFile.new.init
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'patch', 'create a new patch-level (n.n.X) release'
   def patch
     VersionFile.new.patch
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'minor', 'create a new minor-level (n.X.n) release'
   def minor
     VersionFile.new.minor
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'major', 'create a new major-level (X.n.n) release'
   def major
     VersionFile.new.major
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'minor_release_candidate', 'create a new minor-level (n.X.n-RC1) release candidate'
   def minor_release_candidate
     VersionFile.new.minor_release_candidate
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'major_release_candidate', 'create a new major-level (X.n.n-RC1) release candidate'
   def major_release_candidate
     VersionFile.new.major_release_candidate
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'increment_release_candidate', 'increments the current release candidate (n.n.n-RCX)'
   def increment_release_candidate
     VersionFile.new.increment_release_candidate
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'release', 'releases the current release candidate (n.n.n)'
   def release
     VersionFile.new.release
-    commit
-    tag
+    commit_and_tag
   end
 
   desc 'show', "print the current version level from the VERSION file"
   def show
     puts version
+  end
+
+  desc 'branch', 'get the current branch'
+  def branch
+    puts GitInterface.branch
   end
 
   no_commands {
@@ -73,13 +70,9 @@ class MarkVersionCli < Thor
       VersionFile.new.file_name
     end
 
-    def commit
-      system("git add #{file_name}")
-      system("git commit -m 'To version #{version}'")
-    end
-
-    def tag
-      system("git tag #{version} -a -m \"Release version #{version}\"")
+    def commit_and_tag
+      GitInterface.commit
+      GitInterface.tag
     end
   }
 end
