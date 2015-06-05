@@ -58,7 +58,7 @@ class MarkVersionCli < Thor
 
   desc 'branch', 'get the current branch'
   def branch
-    puts GitInterface.branch
+    puts Git.branch
   end
 
   no_commands {
@@ -71,8 +71,9 @@ class MarkVersionCli < Thor
     end
 
     def commit_and_tag
-      GitInterface.commit
-      GitInterface.tag
+      Git.commit
+      Git.tag
+      Git.push if MarkVersionConfig.new.auto_push?
     end
   }
 end

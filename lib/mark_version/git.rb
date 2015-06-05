@@ -1,4 +1,4 @@
-class GitInterface
+class Git
   def self.branch
     `git rev-parse --abbrev-ref HEAD`
   end
@@ -34,5 +34,9 @@ class GitInterface
 
   def self.tag
     `git tag #{version} -a -m "Release version #{version}"`
+  end
+
+  def self.push
+    `git push origin --tags`
   end
 end

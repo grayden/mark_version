@@ -1,8 +1,8 @@
 class VersionFile
   attr_reader :file_name
 
-  def initialize(file_name = 'VERSION')
-    @file_name = file_name
+  def initialize(file_name = "#{MarkVersionConfig.base_folder_name}/VERSION")
+    @file_name = "#{file_name}"
   end
 
   def init
@@ -120,7 +120,7 @@ class VersionFile
   end
 
   def revision
-    `git rev-parse --short HEAD`.chomp
+    Git.short_hash
   end
 
   def write(version)
