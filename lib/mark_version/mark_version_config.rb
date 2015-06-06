@@ -16,30 +16,58 @@ class MarkVersionConfig
   end
 
   def release_branches
-
+    project_configs['release_branches']
   end
 
   def add_release_branch(branch)
+    configs = project_configs
 
+    configs['release_branches'] = [] if configs['release_branches'].nil?
+
+    configs['release_branches'] << branch
+
+    write_project(configs)
   end
 
   def remove_release_branch(branch)
+    configs = project_configs
 
+    return false if configs['release_branches'].nil?
+
+    configs['release_branches'] = configs['release_branches'] - [branch]
+
+    write_project(configs)
   end
 
   def auto_push?
-    content = File.read(local_config_file)
-    configs = JSON.parse(content)
-
-    configs['push_tags']
+    local_configs['auto_push']
   end
 
   def set_auto_push(set)
+    configs = local_configs
+
+    configs['auto_push'] = set
+
+    write_local(configs)
+  end
+
+  private
+
+  def local_configs
     content = File.read(local_config_file)
-    configs = JSON.parse(content)
+    JSON.parse(content) rescue {}
+  end
 
-    configs['push_tags'] = set
-
+  def write_local(configs)
     File.write(local_config_file, configs.to_json)
+  end
+
+  def project_configs
+    content = File.read(project_config_file)
+    JSON.parse(content) rescue {}
+  end
+
+  def write_project(configs)
+    File.write(project_config_file, configs.to_json)
   end
 end
