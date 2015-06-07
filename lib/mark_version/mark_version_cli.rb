@@ -54,7 +54,7 @@ class MarkVersionCli < Thor
   desc 'show', "print the current version level from the VERSION file"
   option :dev, type: :boolean
   def show
-    if options.key?(:dev)
+    if options[:dev]
       puts dev_version
     else
       puts version

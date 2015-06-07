@@ -1,6 +1,6 @@
 class Git
   def self.branch
-    `git rev-parse --abbrev-ref HEAD`
+    `git rev-parse --abbrev-ref HEAD`.chomp
   end
 
   def self.ahead_of_version_by(branch)
@@ -19,6 +19,10 @@ class Git
     ahead_of_version_by('HEAD')
   end
 
+  def self.ahead_of_release_by
+    `git rev-list #{closest_release_branch}..HEAD --count`
+  end
+
   def self.closest_release_branch
     branch = nil
     distance = nil
@@ -30,7 +34,7 @@ class Git
       end
     end
 
-    branch
+    branch || 'master'
   end
 
   def self.on_release_branch?

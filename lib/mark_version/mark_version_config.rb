@@ -3,8 +3,8 @@ require 'json'
 class MarkVersionConfig
   attr_reader :base_folder_name
 
-  def initialize
-    @base_folder_name = '.mark_version'
+  def initialize(base_folder_name = '.mark_version')
+    @base_folder_name = base_folder_name
   end
 
   def project_config_file
@@ -16,7 +16,7 @@ class MarkVersionConfig
   end
 
   def release_branches
-    project_configs['release_branches']
+    project_configs['release_branches'] || []
   end
 
   def add_release_branch(branch)
@@ -54,7 +54,7 @@ class MarkVersionConfig
   private
 
   def local_configs
-    content = File.read(local_config_file)
+    content = File.read(local_config_file) rescue ''
     JSON.parse(content) rescue {}
   end
 
@@ -63,7 +63,7 @@ class MarkVersionConfig
   end
 
   def project_configs
-    content = File.read(project_config_file)
+    content = File.read(project_config_file) rescue ''
     JSON.parse(content) rescue {}
   end
 
