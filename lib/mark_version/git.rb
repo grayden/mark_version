@@ -3,20 +3,38 @@ class Git
     `git rev-parse --abbrev-ref HEAD`
   end
 
-  def self.ahead_of_master_by
-    `git rev-list master..HEAD --count`
+  def self.ahead_of_version_by(branch)
+    `git rev-list #{self.last_version_commit}..#{branch} --count`
   end
 
-  def self.ahead_of_version_by
-    `git rev-list master..#{self.last_version_commit} --count`
+  def self.ahead_of_version?(branch)
+    self.ahead_of_version_by(branch) > 0
   end
 
-  def self.master?
-    self.branch == 'master'
+  def self.current_ahead_of_version?
+    ahead_of_version?('HEAD')
+  end
+
+  def self.current_ahead_by
+    ahead_of_version_by('HEAD')
   end
 
   def self.closest_release_branch
+    branch = nil
+    distance = nil
 
+    MarkVersionConfig.new.release_branches.each do |branch|
+      if distance.nil? || ahead_of_branch_by(branch) < distance
+        branch = branch
+        distance = ahead_of_branch_by(branch)
+      end
+    end
+
+    branch
+  end
+
+  def self.on_release_branch?
+    MarkVersionConfig.new.release_branches.include?(branch)
   end
 
   def self.short_hash

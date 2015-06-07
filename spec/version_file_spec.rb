@@ -5,19 +5,59 @@ describe VersionFile do
 
   before(:each) do
     File.write(file_path, "0.9.12\n42324b")
+    allow(Git).to receive(:current_ahead_of_version?).and_return(false)
+    allow(Git).to receive(:on_release_branch?).and_return(true)
   end
 
   def version_file
     VersionFile.new(file_path)
   end
 
-  it 'gets the current version from the file' do
-    # versions should be in format: i.e. '0.9.12'
-    expect(version_file.version).to match(/^\d+\.\d+.\d+/)
-  end
-
   it 'is able to get the version file name' do
     expect(version_file.file_name).to eq file_path
+  end
+
+  describe 'the current version' do
+    context 'when at the current version' do
+      it 'gets the current dev version from the file' do
+        expect(version_file.dev_version).to eq('0.9.12')
+      end
+
+      it 'gets the current version from the file' do
+        expect(version_file.version).to eq('0.9.12')
+      end
+    end
+
+    context 'when ahead of the current version' do
+      before(:each) do
+        allow(Git).to receive(:current_ahead_of_version?).and_return(true)
+        allow(Git).to receive(:current_ahead_by).and_return(4)
+      end
+
+      it 'the dev version shows the number of commits that have been added since the last version' do
+        expect(version_file.dev_version).to eq('0.9.12+4')
+      end
+
+      it 'the version shows the basic semantic version number' do
+        expect(version_file.version).to eq('0.9.12')
+      end
+    end
+
+    context 'when on a feature branch' do
+      before(:each) do
+        allow(Git).to receive(:on_release_branch?).and_return(false)
+        allow(Git).to receive(:ahead_of_release_by).and_return(7)
+        allow(Git).to receive(:branch).and_return('feature_in_dev')
+      end
+
+      it 'shows the current feature branch and the number of commits that have been added to it' do
+        expect(version_file.dev_version).to eq('0.9.12.feature_in_dev+7')
+      end
+
+      it 'the version shows the basic semantic version number' do
+        expect(version_file.version).to eq('0.9.12')
+      end
+    end
   end
 
   context 'incrementing the patch version' do

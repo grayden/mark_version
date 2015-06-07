@@ -10,7 +10,6 @@ class VersionFile
     @version_file = open(file_name, 'w')
     @version_file.rewind
     @version_file.puts('0.0.0')
-    @version_file.print(revision)
     @version_file.rewind
     @version_file.close
     version
@@ -22,9 +21,18 @@ class VersionFile
 
   def version
     fail "Version file '#{file_name}' does not exist." unless file_exists?
+
     @version_file = open(file_name, 'r+')
     version = @version_file.readline.chomp
     @version_file.close
+
+    version
+  end
+
+  def dev_version
+    return "#{version}.#{Git.branch}+#{Git.ahead_of_release_by}" unless Git.on_release_branch?
+    return "#{version}+#{Git.current_ahead_by}" if Git.current_ahead_of_version?
+
     version
   end
 
@@ -127,7 +135,6 @@ class VersionFile
     fail "Version file '#{file_name}' does not exist." unless file_exists?
     @version_file = open(file_name, 'r+')
     @version_file.puts(version)
-    @version_file.print(revision)
     @version_file.close
     version
   end
