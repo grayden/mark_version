@@ -80,8 +80,8 @@ class MarkVersionCli < Thor
     end
 
     def commit_and_tag
-      Git.commit
-      Git.tag
+      Git.commit(VersionFile.new.version)
+      Git.tag(VersionFile.new.version)
       Git.push if MarkVersionConfig.new.auto_push?
     end
   }

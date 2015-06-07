@@ -49,12 +49,12 @@ class Git
     `git log --format="%h" LICENSE | head -n 1`
   end
 
-  def self.commit
+  def self.commit(version)
     `git add .mark_version/VERSION`
     `git commit -m "To version #{version}"`
   end
 
-  def self.tag
+  def self.tag(version)
     `git tag #{version} -a -m "Release version #{version}"`
   end
 
