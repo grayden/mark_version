@@ -3,8 +3,8 @@ require 'json'
 class MarkVersionConfig
   attr_reader :base_folder_name
 
-  def initialize(base_folder = '.mark_version')
-    @base_folder_name = base_folder
+  def initialize
+    @base_folder_name = '.mark_version'
   end
 
   def project_config_file

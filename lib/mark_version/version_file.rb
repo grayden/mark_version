@@ -1,7 +1,7 @@
 class VersionFile
   attr_reader :file_name
 
-  def initialize(file_name = "#{MarkVersionConfig.base_folder_name}/VERSION")
+  def initialize(file_name = "#{MarkVersionConfig.new.base_folder_name}/VERSION")
     @file_name = "#{file_name}"
   end
 

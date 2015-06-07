@@ -52,8 +52,13 @@ class MarkVersionCli < Thor
   end
 
   desc 'show', "print the current version level from the VERSION file"
+  option :dev, type: :boolean
   def show
-    puts version
+    if options.key?(:dev)
+      puts dev_version
+    else
+      puts version
+    end
   end
 
   desc 'branch', 'get the current branch'
@@ -64,6 +69,10 @@ class MarkVersionCli < Thor
   no_commands {
     def version
       VersionFile.new.version
+    end
+
+    def dev_version
+      VersionFile.new.dev_version
     end
 
     def file_name

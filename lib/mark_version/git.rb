@@ -46,7 +46,7 @@ class Git
   end
 
   def self.commit
-    `git add #{file_name}`
+    `git add .mark_version/VERSION`
     `git commit -m "To version #{version}"`
   end
 
