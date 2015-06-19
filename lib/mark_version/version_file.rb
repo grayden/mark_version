@@ -127,10 +127,6 @@ class VersionFile
     release_candidate_iteration.to_i + 1
   end
 
-  def revision
-    Git.short_hash
-  end
-
   def write(version)
     fail "Version file '#{file_name}' does not exist." unless file_exists?
     @version_file = open(file_name, 'r+')
