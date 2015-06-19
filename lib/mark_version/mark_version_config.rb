@@ -6,6 +6,15 @@ class MarkVersionConfig
   def initialize(base_folder_name = '.mark_version')
     @base_folder_name = base_folder_name
   end
+  
+  def init
+    f1 = open(project_config_file, 'w')
+    f1.puts('{ }')
+    f1.close
+    f2 = open(local_config_file, 'w')
+    f2.puts('{ }')
+    f2.close
+  end
 
   def project_config_file
     "#{base_folder_name}/CONFIG"

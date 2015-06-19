@@ -4,11 +4,11 @@ class Git
   end
 
   def self.ahead_of_version_by(branch)
-    `git rev-list #{self.last_version_commit}..#{branch} --count`
+    `git rev-list #{self.last_version_commit}..#{branch} --count`.chomp
   end
 
   def self.ahead_of_version?(branch)
-    self.ahead_of_version_by(branch) > 0
+    self.ahead_of_version_by(branch).to_i > 0
   end
 
   def self.current_ahead_of_version?
@@ -20,7 +20,11 @@ class Git
   end
 
   def self.ahead_of_release_by
-    `git rev-list #{closest_release_branch}..HEAD --count`
+    `git rev-list #{closest_release_branch}..HEAD --count`.chomp
+  end
+
+  def self.ahead_of_branch_by(branch)
+    `git rev-list #{branch}..HEAD --count`.chomp
   end
 
   def self.closest_release_branch
@@ -42,11 +46,16 @@ class Git
   end
 
   def self.short_hash
-    `git rev-parse --short HEAD`
+    `git rev-parse --short HEAD`.chomp
   end
 
   def self.last_version_commit
-    `git log --format="%h" LICENSE | head -n 1`
+    `git log --format="%h" .mark_version/VERSION | head -n 1`.chomp
+  end
+
+  def self.commit_and_tag(version)
+    commit(version)
+    tag(version)
   end
 
   def self.commit(version)
