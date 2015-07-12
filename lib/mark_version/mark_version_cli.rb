@@ -1,8 +1,6 @@
 require 'thor'
 
 class MarkVersionCli < Thor
-  default_task :show
-
   desc 'init', 'initialize the project to start tracking it\'s version'
   def init
     Project.init

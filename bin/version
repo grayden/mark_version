@@ -2,4 +2,8 @@
 
 require 'mark_version'
 
-MarkVersionCli.start(ARGV)
+begin
+  MarkVersionCli.start(ARGV)
+rescue
+  $stderr.puts "\n\t #{$!.message}\n\n"
+end
