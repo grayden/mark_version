@@ -50,7 +50,7 @@ class Git
   end
 
   def self.last_version_commit
-    `git log --format="%h" .mark_version/VERSION | head -n 1`.chomp
+    `git log --format="%h" VERSION | head -n 1`.chomp
   end
 
   def self.commit_and_tag(version)
@@ -59,7 +59,7 @@ class Git
   end
 
   def self.commit(version)
-    `git add .mark_version/VERSION`
+    `git add VERSION`
     `git commit -m "To version #{version}"`
   end
 
