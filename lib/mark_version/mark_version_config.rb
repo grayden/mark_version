@@ -9,10 +9,21 @@ class MarkVersionConfig
   
   def init
     f1 = open(project_config_file, 'w')
-    f1.puts('{ }')
+    f1.puts(<<CONF
+{
+  "release_branches": ["master"]
+}
+CONF
+           )
+
     f1.close
     f2 = open(local_config_file, 'w')
-    f2.puts('{ }')
+    f2.puts(<<CONF
+{
+  "auto_push":  false
+}
+CONF
+           )
     f2.close
   end
 
