@@ -20,6 +20,8 @@ gem install 'mark_version'
 
 This will install the *version* binary. Once installed, the next thing you'll need to do is initialize your project. You can do this by running:
 
+**NOTE: At this time, Mark Version only works in git tracked repositories.
+
 ## Setup
 
 ```
